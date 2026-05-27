@@ -132,7 +132,7 @@ presence.on('UpdateData', async () => {
     }
 
     presenceData.type = isMusicVideo ? ActivityType.Listening : ActivityType.Watching
-    presenceData.name = uploaderName
+    presenceData.name = title - uploaderName
     presenceData.state = null
     presenceData.details = title?.getAttribute('title')
     presenceData.buttons = [
