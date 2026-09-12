@@ -277,43 +277,42 @@ presence.on('UpdateData', async () => {
       presenceData.startTimestamp = browsingTimestamp
       break
     }
-    case 'live.bilibili.com': {
-      if (privacy) {
-        presenceData.details = strings.watchingStream
-        break
-      }
-      const presenceDetails = document.querySelector('.small-title') === null
-        ? presenceData.details = document
-          .querySelector('.smaller-title')
-          ?.textContent
-          ?.trim()
-        : presenceData.details = document
-          .querySelector('.small-title')
-          ?.textContent
-          ?.trim()
-      const presenceState = document.querySelector('.room-owner-username')
-        ?.textContent
-        ?.trim()
-      const isCompetition = presenceDetails === undefined && presenceState === undefined
-      if (isCompetition === true) {
-        if (iFrameTitle === undefined || iFrameRoomOwnerName === undefined) {
-          return
-        }
-        presenceData.details = iFrameTitle
-        presenceData.state = iFrameRoomOwnerName
-      }
-      else {
-        presenceData.details = presenceDetails
-        presenceData.state = presenceState
-      }
-      presenceData.buttons = [
-        {
-          label: strings.watchStream,
-          url: `https://live.bilibili.com/${urlpath[1]}`,
-        },
-      ]
-      break
-    }
+case 'live.bilibili.com': {
+  if (privacy) {
+    presenceData.details = strings.watchingStream
+    break
+  }
+
+  const streamer =
+    document.querySelector('.room-owner-username')
+      ?.textContent
+      ?.trim()
+
+  let roomTitle =
+    document.title
+      ?.trim()
+
+  // 移除 Bilibili 後面可能附加的網站名稱
+  roomTitle = roomTitle
+    ?.replace(/\s*[-|｜].*$/u, '')
+    ?.trim()
+
+  presenceData.details =
+    roomTitle || strings.watchingStream
+
+  if (streamer) {
+    presenceData.state = streamer
+  }
+
+  presenceData.buttons = [
+    {
+      label: strings.watchStream,
+      url: document.location.href,
+    },
+  ]
+
+  break
+}
     case 'search.bilibili.com': {
       if (privacy) {
         presenceData.details = strings.searchingForSomething
